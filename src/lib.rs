@@ -3,15 +3,15 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen(start)]
 pub async fn run() {
     console_error_panic_hook::set_once();
-    web_sys::console::log_1(&"Hello World!".into());
+    let document = web_sys::window().unwrap().document().unwrap();
 
-    let canvas: web_sys::HtmlCanvasElement = web_sys::window()
-        .unwrap()
-        .document()
-        .unwrap()
-        .create_element("canvas")
-        .unwrap()
-        .unchecked_into();
+    let loading = document.create_element("div").unwrap();
+    loading.set_class_name("loading");
+    loading.set_inner_html("Loading...");
+    document.body().unwrap().append_child(&loading).unwrap();
+
+    let canvas: web_sys::HtmlCanvasElement =
+        document.create_element("canvas").unwrap().unchecked_into();
     let context = canvas
         .get_context("2d")
         .unwrap()
@@ -19,7 +19,6 @@ pub async fn run() {
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    let document = web_sys::window().unwrap().document().unwrap();
     document.body().unwrap().append_child(&canvas).unwrap();
 
     // let image_element = web_sys::HtmlImageElement::new();
